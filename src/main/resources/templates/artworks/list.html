@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <title>Artworks</title>
+    <style>
+        .error { color: red; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 8px; border: 1px solid #ddd; }
+        .pager { margin-top: 12px; }
+        .pager a { margin: 0 4px; }
+    </style>
+</head>
+<body>
+<h1>Artwork Management</h1>
+
+<div>
+    <form th:action="@{/artworks}" method="get">
+        <input type="text" name="keyword" th:value="${keyword}" placeholder="Search by title or artist" />
+        <button type="submit">Search</button>
+        <a th:href="@{/artworks/new}">Add New Artwork</a>
+    </form>
+</div>
+
+<div>
+    <div th:if="${#lists.isEmpty(artworks)}">
+        <p>Hiện chưa có tác phẩm nào trong triển lãm</p>
+    </div>
+
+    <div th:if="${!#lists.isEmpty(artworks)}">
+        <table>
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Title</th>
+                <th>Artist</th>
+                <th>Date</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="art : ${artworks}">
+                <td th:text="${art.id}"></td>
+                <td th:text="${art.title}"></td>
+                <td th:text="${art.artist}"></td>
+                <td th:text="${#temporals.format(art.date, 'dd/MM/yyyy')}"></td>
+                <td>
+                    <a th:href="@{'/artworks/' + ${art.id} + '/edit'}">Edit</a>
+                    <form th:action="@{'/artworks/' + ${art.id} + '/delete'}" method="post" style="display:inline" onsubmit="return confirmDelete();">
+                        <button type="submit">Delete</button>
+                    </form>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+
+        <div class="pager">
+            <div th:if="${totalPages > 1}">
+                <a th:if="${currentPage > 0}" th:href="@{/artworks(page=${currentPage-1}, keyword=${keyword})}">Previous</a>
+                <span th:each="i : ${#numbers.sequence(0, totalPages-1)}">
+                    <a th:href="@{/artworks(page=${i}, keyword=${keyword})}" th:classappend="${i == currentPage} ? 'current'" th:text="${i+1}"></a>
+                </span>
+                <a th:if="${currentPage < totalPages-1}" th:href="@{/artworks(page=${currentPage+1}, keyword=${keyword})}">Next</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
+

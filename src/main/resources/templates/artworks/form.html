@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <title th:text="${artwork.id} != null ? 'Edit Artwork' : 'New Artwork'">Artwork Form</title>
+    <style>.error{color:red;} label{display:block;margin-top:8px;} input, button{margin-top:4px;}</style>
+</head>
+<body>
+<h1 th:text="${artwork.id} != null ? 'Edit Artwork' : 'Add New Artwork'"></h1>
+
+<form th:action="${artwork.id} != null ? @{/artworks/{id}(id=${artwork.id})} : @{/artworks}"
+      th:object="${artwork}" method="post">
+    <label for="title">Title</label>
+    <input type="text" id="title" th:field="*{title}" />
+    <div class="error" th:if="${#fields.hasErrors('title')}" th:errors="*{title}"></div>
+
+    <label for="artist">Artist</label>
+    <input type="text" id="artist" th:field="*{artist}" />
+    <div class="error" th:if="${#fields.hasErrors('artist')}" th:errors="*{artist}"></div>
+
+    <label for="date">Date</label>
+    <input type="date" id="date" th:field="*{date}" />
+    <div class="error" th:if="${#fields.hasErrors('date')}" th:errors="*{date}"></div>
+
+    <div style="margin-top:12px;">
+        <button type="submit">Save</button>
+        <a th:href="@{/artworks}">Cancel</a>    </div>
+</form>
+
+</body>
+</html>
+
